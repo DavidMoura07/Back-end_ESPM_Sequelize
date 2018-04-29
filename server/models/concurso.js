@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       as: "orgao",
       onDelete: "CASCADE"
     });
+    Concurso.belongsToMany(models.Profissao, {
+      through: "Concurso_Profissao",
+      as: "vaga",
+      foreignKey: "concurso_id"
+    });
   };
   return Concurso;
 };

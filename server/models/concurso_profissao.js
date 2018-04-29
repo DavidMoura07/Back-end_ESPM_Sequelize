@@ -3,15 +3,19 @@ module.exports = (sequelize, DataTypes) => {
   var Concurso_Profissao = sequelize.define(
     "Concurso_Profissao",
     {
-      nome: DataTypes.STRING
+      concurso_id: {
+        type: DataTypes.INTEGER,
+        unique: "concurso_profissao"
+      },
+      profissao_id: {
+        type: DataTypes.INTEGER,
+        unique: "concurso_profissao"
+      }
     },
-    {}
+    {
+      freezeTableName: true
+    }
   );
-  Concurso_Profissao.associate = function(models) {
-    Concurso_Profissao.belongsTo(models.Concurso, {
-      foreignKey: "concursoId",
-      onDelete: "CASCADE"
-    });
-  };
+  Concurso_Profissao.associate = function(models) {};
   return Concurso_Profissao;
 };

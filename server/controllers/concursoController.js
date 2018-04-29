@@ -1,5 +1,6 @@
 const Concurso = require("../models").Concurso;
 const Orgao = require("../models").Orgao;
+const Profissao = require("../models").Profissao;
 
 module.exports = {
   list(req, res) {
@@ -8,6 +9,11 @@ module.exports = {
         {
           model: Orgao,
           as: "orgao",
+          attributes: ["id", "nome"]
+        },
+        {
+          model: Profissao,
+          as: "vaga",
           attributes: ["id", "nome"]
         }
       ],
@@ -21,6 +27,11 @@ module.exports = {
           model: Orgao,
           as: "orgao",
           attributes: ["nome"]
+        },
+        {
+          model: Profissao,
+          as: "vaga",
+          attributes: ["id", "nome"]
         }
       ],
       where: [
@@ -39,5 +50,14 @@ module.exports = {
         return res.status(200).send(concurso);
       })
       .catch(error => res.status(400).send(error));
+  },
+  findByCpf(req, res) {
+    var request = require("request");
+    var url = "http://localhost:8000/candidatos/cpf/" + req.params.cpf;
+    request(url, function(error, response, body) {
+      console.log("error:", error);
+      console.log("statusCode:", response && response.statusCode);
+      console.log("body:", body);
+    });
   }
 };

@@ -35,5 +35,31 @@ module.exports = {
         return res.status(200).send(candidato);
       })
       .catch(error => res.status(400).send(error));
+  },
+  findByCPF(req, res) {
+    return Candidato.findOne({
+      include: [
+        {
+          model: Profissao,
+          as: "profissao",
+          attributes: ["id", "nome"]
+        }
+      ],
+      attributes: ["id", "nome", "nasc", "cpf"],
+      where: [
+        {
+          cpf: req.params.cpf
+        }
+      ]
+    })
+      .then(candidato => {
+        if (!candidato) {
+          return res.status(404).send({
+            message: "candidato nao encontrado"
+          });
+        }
+        return res.status(200).send(candidato);
+      })
+      .catch(error => res.status(400).send(error));
   }
 };

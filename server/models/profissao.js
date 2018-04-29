@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Profissao.belongsToMany(models.Concurso, {
       through: "Concurso_Profissao",
-      as: "vagas",
+      as: "vaga",
       foreignKey: "profissao_id"
     });
   };
