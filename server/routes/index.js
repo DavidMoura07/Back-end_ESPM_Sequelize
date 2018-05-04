@@ -11,4 +11,5 @@ module.exports = app => {
   app.get("/concursos/cpf/:cpf", concursoController.findByCpf);
   app.get("/orgaos/", orgaoController.list);
   app.get("/orgaos/:nomeOrgao", orgaoController.findOne);
+  app.get("/candidatos/codigo/:cod", candidatoController.findByCode);
 };

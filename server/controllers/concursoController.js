@@ -1,6 +1,9 @@
 const Concurso = require("../models").Concurso;
 const Orgao = require("../models").Orgao;
 const Profissao = require("../models").Profissao;
+const Candidato = require("../models").Candidato;
+const Sequelize = require("sequelize");
+const op = Sequelize.Op;
 
 module.exports = {
   list(req, res) {
@@ -52,12 +55,48 @@ module.exports = {
       .catch(error => res.status(400).send(error));
   },
   findByCpf(req, res) {
-    var request = require("request");
-    var url = "http://localhost:8000/candidatos/cpf/" + req.params.cpf;
-    request(url, function(error, response, body) {
-      console.log("error:", error);
-      console.log("statusCode:", response && response.statusCode);
-      console.log("body:", body);
+    Candidato.findOne({
+      include: [
+        {
+          model: Profissao,
+          as: "profissao",
+          attributes: ["id"]
+        }
+      ],
+      attributes: [],
+      where: [
+        {
+          cpf: req.params.cpf
+        }
+      ]
+    }).then(candidato => {
+      var vet_profissao = [];
+
+      candidato.profissao.forEach(profissao => {
+        vet_profissao.push(profissao.id);
+      });
+      console.log(vet_profissao);
+
+      Concurso.findAll({
+        include: [
+          {
+            model: Orgao,
+            as: "orgao",
+            attributes: ["id", "nome"]
+          },
+          {
+            model: Profissao,
+            as: "vaga",
+            attributes: ["id", "nome"],
+            where: {
+              id: {
+                [op.or]: vet_profissao
+              }
+            }
+          }
+        ],
+        attributes: ["id", "edital", "codigo"]
+      }).then(concurso => res.status(200).send(concurso));
     });
   }
 };
